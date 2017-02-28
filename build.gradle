@@ -1,0 +1,46 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.2.2'
+
+    // NOTE: Do not place your application dependencies here; they belong
+    // in the individual module build.gradle files
+  }
+}
+
+allprojects {
+  repositories {
+    jcenter()
+  }
+
+  ext {
+    // report directory
+    reports_directory = "$buildDir/reports"
+    lint_reports_directory = "${reports_directory}/lint"
+    pmd_reports_directory = "${reports_directory}/pmd"
+    checkstyle_reports_directory = "${reports_directory}/checkstyle"
+    findbugs_reports_directory = "${reports_directory}/findbugs"
+
+    // plugin for all (checkstyle, pmd and findbugs)
+    quality_gradle_file = "config/quality.gradle"
+
+    // config files
+    lint_config_file = "lint.xml"
+    checkstyle_configFile = "${project.rootDir}/config/checkstyle/checkstyle.xml"
+    pmd_rulesetFile = "${project.rootDir}/config/pmd/pmd-ruleset.xml"
+    findbugs_excludeFile = "${project.rootDir}/config/findbugs/findbugs-exclude-filter.xml"
+
+    // xsl file to generate html readable version
+    checkstyle_xslFile = "${project.rootDir}/config/checkstyle/checkstyle-noframes-sorted.xsl"
+    pmd_xslFile = "${project.rootDir}/config/pmd/pmd-report.xslt"
+    findbugs_xslFile = "${project.rootDir}/config/findbugs/findbugs-default.xsl"
+  }
+}
+
+task clean(type: Delete) {
+  delete rootProject.buildDir
+}

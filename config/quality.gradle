@@ -1,0 +1,83 @@
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+
+task checkstyle(type: Checkstyle) {
+  ignoreFailures = false
+  configFile file("${checkstyle_configFile}")
+  source 'src'
+  include '**/main/**/*.java'
+  exclude '**/gen/**'
+  exclude '**/gdata/**'
+  exclude '**/apache/**'
+
+  classpath = files()
+}
+
+task findbugs(type: FindBugs) {
+  ignoreFailures = false
+  effort = "max"
+  reportLevel = "high"
+  excludeFilter = new File("${findbugs_excludeFile}")
+  classes = files("$project.buildDir/intermediates/classes")
+
+  source 'src'
+  include '**/*.java'
+  exclude '**/gen/**'
+
+  reports {
+    html.enabled true
+    xml.enabled false
+  }
+
+  classpath = files()
+}
+
+pmd {
+  toolVersion = '5.5.0'
+  ruleSetFiles = files("${pmd_rulesetFile}")
+}
+
+task pmd(type: Pmd) {
+  ruleSets = [] //"java-basic", "java-braces", "java-strings"
+  ignoreFailures = false
+
+  source 'src'
+  includes = ['**/*.java']
+  excludes = ['**/gen/**', 'src/test/**', '**/v2/db/**', '**/nst/**', '**/UpgradeManager*', '**/com/groupon/view/webview/logging/**']
+  reports {
+    xml.enabled = true
+    html.enabled = true
+  }
+}
+
+checkstyle {
+
+  repositories {
+    mavenCentral()
+    maven {
+      url "http://sevntu-checkstyle.github.com/sevntu.checkstyle/maven2"
+    }
+  }
+
+  configurations {
+    checkstyle
+  }
+
+  dependencies {
+    checkstyle 'com.puppycrawl.tools:checkstyle:6.7'
+    checkstyle 'com.github.sevntu.checkstyle:sevntu-checks:1.13.2'
+  }
+}
+
+task checkstyleReport {
+  doLast {
+    if (file("$buildDir/reports/checkstyle/checkstyle.xml").exists()) {
+      ant.xslt(in: "$buildDir/reports/checkstyle/checkstyle.xml",
+          style: "$rootDir/config/checkstyle/checkstyle-noframes-sorted.xsl",
+          out: "$buildDir/reports/checkstyle/checkstyle.html")
+    }
+  }
+}
+
+check.dependsOn 'checkstyle', 'checkstyleReport', 'findbugs', 'pmd'

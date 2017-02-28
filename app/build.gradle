@@ -1,0 +1,118 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+
+  dependencies {
+    classpath "com.neenbedankt.gradle.plugins:android-apt:1.8"
+  }
+}
+
+allprojects {
+  repositories {
+    mavenCentral()
+  }
+  configurations.all {
+    resolutionStrategy {
+      force 'com.google.code.findbugs:jsr305:3.0.0'
+    }
+  }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply from: rootProject.file("${quality_gradle_file}")
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion "25.0.2"
+  defaultConfig {
+    applicationId "com.skywalker"
+    minSdkVersion 21
+    targetSdkVersion 25
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    debug {
+      applicationIdSuffix '.debug'
+      testCoverageEnabled true
+    }
+
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  lintOptions {
+    abortOnError true
+    quiet false
+    htmlReport true
+    xmlReport true
+    lintConfig file("${lint_config_file}")
+    htmlOutput file("${lint_reports_directory}/lint-results.html")
+    xmlOutput file("${lint_reports_directory}/lint-results.xml")
+  }
+
+  // used for Jackson duplicate files issues when building
+  packagingOptions {
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/NOTICE.txt'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/LICENSE'
+  }
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+
+  // support libraries
+  compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_V7_VERSION"
+  compile "com.android.support:design:$ANDROID_SUPPORT_DESIGN_VERSION"
+  compile "com.android.support:support-annotations:$ANDROID_ANNOTATIONS_VERSION"
+  compile "com.android.support:recyclerview-v7:$ANDROID_SUPPORT_V7_VERSION"
+
+  // Network
+  compile "com.squareup.okhttp3:okhttp:$OK_HTTP3_VERSION"
+  compile "com.squareup.okhttp3:okhttp-urlconnection:$OK_HTTP3_VERSION"
+  compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+  compile "com.github.bumptech.glide:glide:$GLIDE_VERSION"
+  compile "com.github.bumptech.glide:okhttp3-integration:${GLIDE_OKHTTP_VERSION}@aar"
+  compile "com.fasterxml.jackson.core:jackson-core:$JACKSON_VERSION"
+  compile "com.fasterxml.jackson.core:jackson-annotations:$JACKSON_VERSION"
+  compile "com.fasterxml.jackson.core:jackson-databind:$JACKSON_VERSION"
+  apt "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
+  compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
+
+  // DI
+  compile "com.google.dagger:dagger:$DAGGER_VERSION"
+  annotationProcessor "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+  provided 'javax.annotation:jsr250-api:1.0'
+  compile "com.f2prateek.dart:dart:$DART_VERSION"
+  compile "com.f2prateek.dart:henson:$DART_VERSION"
+  apt "com.f2prateek.dart:henson-processor:$DART_VERSION"
+  compile "com.f2prateek.dart:dart-processor:$DART_VERSION"
+
+  // Rx
+  compile "io.reactivex:rxjava:$RXJAVA_VERSION"
+  compile "io.reactivex:rxandroid:$RXANDROID_VERSION"
+  compile "com.jakewharton.rxbinding:rxbinding:$RXBINDING_VERSION"
+
+  // Memory Leak
+  debugCompile "com.squareup.leakcanary:leakcanary-android:$LEAKCANARY_VERSION"
+  releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$LEAKCANARY_VERSION"
+
+  // Test
+  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    exclude group: 'com.android.support', module: 'support-annotations'
+    exclude group: 'com.google.code.findbugs:jsr305'
+  })
+  testCompile 'junit:junit:4.12'
+  testCompile "org.easymock:easymock:$EASY_MOCK_VERSION"
+}

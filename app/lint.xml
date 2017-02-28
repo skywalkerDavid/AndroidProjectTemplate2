@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--use 'lint - -list' to show all possible ids-->
+
+<lint>
+  <issue id="SpUsage" severity="ignore"/>
+  <issue id="Typos" severity="ignore"/>
+  <issue id="MenuTitle" severity="ignore"/>
+
+  <issue id="UnusedResources" severity="error">
+    <ignore path="src/main/res/layout/credit_card_demographics*.xml"/>
+    <ignore path="src/main/res/layout/rebel_monkey_mock_layout.xml"/>
+    <ignore path="src/main/res/layout/rapi_search_filter_empty_view.xml" />
+  </issue>
+
+  <issue id="all">
+    <ignore path="build/generated/source/apt/*"/>
+  </issue>
+
+  <!--PLEASE READ:
+  Whoever is on lint duty should tackle one or more of the following errors. Specific details
+  can be found in Groupon/build/reports/lint-report.html. Currently the error has been converted into a
+  warning so the build doesn't crash. When you removed all the lint error for a specific ID, please remove
+  that ID from this file! Also, We should avoid adding new error ID and convert it to a warning, instead we
+  should fix the error.
+  -->
+
+  <issue id="UnusedResources" severity="warning"/>
+  <issue id="Suspicious0dp" severity="warning"/>
+  <issue id="MissingTranslation" severity="warning"/>
+  <issue id="OldTargetApi" severity="warning"/>
+  <issue id="MissingQuantity" severity="warning"/>
+  <issue id="ExtraTranslation" severity="warning"/>
+  <issue id="DuplicateIncludedIds" severity="warning"/>
+  <issue id="StringFormatInvalid" severity="error"/>
+  <issue id="StringFormatMatches" severity="error"/>
+  <issue id="ImpliedQuantity" severity="warning"/>
+  <issue id="WebViewLayout" severity="warning"/>
+  <issue id="ValidFragment" severity="warning"/>
+  <issue id="JavascriptInterface" severity="warning"/>
+  <issue id="InvalidPackage" severity="warning"/>
+  <issue id="LongLogTag" severity="warning"/>
+  <issue id="Recycle" severity="error"/>
+  <issue id="UseValueOf" severity="error"/>
+  <issue id="ObsoleteLayoutParam" severity="error"/>
+  <issue id="HardcodedText" severity="error"/>
+  <issue id="CallSuper" severity="error"/>
+</lint>
